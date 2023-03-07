@@ -1,0 +1,15 @@
+name: Snyk vulnerability reports
+
+on:
+  schedule:
+    - cron: '0/1 * * * *'
+    
+jobs:
+  test:
+    name: Release operator-bundle
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: test
+      run: |
+        echo "Test"
