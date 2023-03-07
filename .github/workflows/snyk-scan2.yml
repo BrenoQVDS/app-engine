@@ -21,6 +21,6 @@ jobs:
         node --version
         npm install snyk -g
         snyk cli --version
-        snyk auth ${{ secrets.ENTANDO_BOT_TOKEN }}
+        snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk test
         set +xv
