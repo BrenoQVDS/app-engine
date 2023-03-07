@@ -17,6 +17,6 @@ jobs:
         cd scan-prj
         pwd
         ls
-        sh build-pom.sh
+        bash build-pom.sh
         snyk test
         set +v
