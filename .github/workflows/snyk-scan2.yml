@@ -11,7 +11,7 @@ jobs:
       uses: actions/checkout@v3
     - name: pwd
       run: |
-        set -v
+        set -xv
         pwd
         ls
         cd scan-prj
@@ -21,5 +21,6 @@ jobs:
         node --version
         npm install snyk -g
         snyk cli --version
+        snyk auth ${{ secrets.ENTANDO_BOT_TOKEN }}
         snyk test
-        set +v
+        set +xv
