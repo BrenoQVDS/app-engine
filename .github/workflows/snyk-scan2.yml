@@ -18,5 +18,6 @@ jobs:
         pwd
         ls
         bash build-pom.sh
+        npm install snyk
         snyk test
         set +v
