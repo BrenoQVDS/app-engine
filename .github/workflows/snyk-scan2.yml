@@ -18,6 +18,8 @@ jobs:
         pwd
         ls
         bash build-pom.sh
-        npm install snyk
+        node --version
+        npm install snyk -g
+        snyk cli --version
         snyk test
         set +v
