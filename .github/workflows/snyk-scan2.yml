@@ -1,4 +1,4 @@
-name: Snyk vulnerability reports
+name: Snyk vulnerability reports manual
 
 on:
   workflow_dispatch:
@@ -7,6 +7,14 @@ jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Run a one-line script
-        run: echo Hello, world!
+    - name: Checkout project
+      uses: actions/checkout@v3
+    - name: pwd
+      runs: |
+        set -xv
+        pwd
+        cd scan-prj
+        pwd
+        sh build.sh
+        snyk test
+        set +xv
