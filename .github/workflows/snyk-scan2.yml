@@ -9,19 +9,16 @@ jobs:
     steps:
     - name: Checkout project
       uses: actions/checkout@v3
-    - name: pwd
+    - name: Scan vulnerabilities with snyk
       run: |
-        set -xv
-        pwd
-        ls
         cd scan-prj
-        pwd
-        ls
         bash build-pom.sh
-        node --version
         npm install snyk -g
-        snyk cli --version
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk test >> snyk-results.txt || true
-        cat snyk-results.txt
-        set +xv
+        LINE_NUM=1
+        while read LINE
+        do
+          echo "${LINE_NUM}: ${LINE}"
+          ((LINE_NUM++))
+        done < snyk-results.txt
