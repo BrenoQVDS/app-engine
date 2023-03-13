@@ -16,7 +16,6 @@ jobs:
         npm install snyk -g
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk test >> snyk-results.txt || true
-        cat snyk-results.txt
         echo ""
         echo ""
         echo "starting report"
@@ -25,12 +24,12 @@ jobs:
         LINE_NUM=1
         while read LINE
         do
-          if [[ $LINE == ✗* ]]
-          then
-            echo "Vulnerability: ${LINE}"
-          elif [[ $LINE == Upgrade* ]]
+          if [[ $LINE == Upgrade* ]]
           then
             echo "How to fix: ${LINE}"
+            echo "Lib:"
+            echo "From version:"
+            echo "To version:"
           elif [[ $LINE == "Issues with no direct upgrade"* ]]
           then
             echo "No direct upgrade: ${LINE}"
@@ -40,11 +39,24 @@ jobs:
           elif [[ $LINE == "This issue was fixed in versions"* ]]
           then
             echo "Explicity fix: ${LINE}"
+            echo "Explicity fix version:"
+          elif [[ $LINE == ✗* ]]
+          then
+            echo "Vulnerability: ${LINE}"
+            echo "Vulnerability type:"
+            echo "Severity:"
+            echo "Snyk link:"
           elif [[ $LINE == "introduced by"* ]]
           then
             echo "Introduced: ${LINE}"
-          else
-            echo "Ignored: ${LINE}"
+            echo "Lib:"
+            echo "Version:"
           fi
           ((LINE_NUM++))
         done < snyk-results.txt
+        echo ""
+        echo ""
+        echo "finished report"
+        echo ""
+        echo ""
+        cat snyk-results.txt
