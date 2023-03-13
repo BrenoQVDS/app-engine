@@ -20,6 +20,7 @@ jobs:
         while read LINE
         do
           if [[ $LINE == ✗ ]]
+          then
             echo "${LINE_NUM}: ${LINE}"
           fi
           ((LINE_NUM++))
