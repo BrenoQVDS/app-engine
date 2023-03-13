@@ -27,7 +27,22 @@ jobs:
         do
           if [[ $LINE == ✗* ]]
           then
-            echo "${LINE_NUM}: ${LINE}"
+            echo "Vulnerability: ${LINE}"
+          elif [[ $LINE == Upgrade* ]]
+          then
+            echo "Information on how to fix it: ${LINE}"
+          elif [[ $LINE == Issues with no direct upgrade* ]]
+          then
+            echo "No direct upgrade: ${LINE}"
+          elif [[ $LINE == No upgrade or patch available* ]]
+          then
+            echo "No fix: ${LINE}"
+          elif [[ $LINE == This issue was fixed in versions* ]]
+          then
+            echo "Explicity fix: ${LINE}"
+          else
+          then
+            echo "Ignored: ${LINE}"
           fi
           ((LINE_NUM++))
         done < snyk-results.txt
