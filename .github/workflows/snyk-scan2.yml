@@ -41,7 +41,6 @@ jobs:
           then
             echo "Explicity fix: ${LINE}"
           else
-          then
             echo "Ignored: ${LINE}"
           fi
           ((LINE_NUM++))
