@@ -30,7 +30,7 @@ jobs:
             echo "Vulnerability: ${LINE}"
           elif [[ $LINE == Upgrade* ]]
           then
-            echo "Information on how to fix it: ${LINE}"
+            echo "How to fix: ${LINE}"
           elif [[ $LINE == "Issues with no direct upgrade"* ]]
           then
             echo "No direct upgrade: ${LINE}"
@@ -40,6 +40,9 @@ jobs:
           elif [[ $LINE == "This issue was fixed in versions"* ]]
           then
             echo "Explicity fix: ${LINE}"
+          elif [[ $LINE == "introduced by"* ]]
+          then
+            echo "Introduced: ${LINE}"
           else
             echo "Ignored: ${LINE}"
           fi
