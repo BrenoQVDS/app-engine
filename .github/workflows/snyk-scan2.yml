@@ -17,6 +17,11 @@ jobs:
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk test >> snyk-results.txt || true
         cat snyk-results.txt
+        echo ""
+        echo ""
+        echo "starting report"
+        echo ""
+        echo ""
         LINE_NUM=1
         while read LINE
         do
