@@ -19,6 +19,8 @@ jobs:
         LINE_NUM=1
         while read LINE
         do
-          echo "${LINE_NUM}: ${LINE}"
+          if [[ $LINE == ✗ ]]
+            echo "${LINE_NUM}: ${LINE}"
+          fi
           ((LINE_NUM++))
         done < snyk-results.txt
