@@ -19,7 +19,7 @@ jobs:
         LINE_NUM=1
         while read LINE
         do
-          if [[ $LINE == ✗ ]]
+          if [[ $LINE == ✗* ]]
           then
             echo "${LINE_NUM}: ${LINE}"
           fi
