@@ -16,6 +16,7 @@ jobs:
         npm install snyk -g
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk test >> snyk-results.txt || true
+        cat snyk-results.txt
         LINE_NUM=1
         while read LINE
         do
