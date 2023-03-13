@@ -31,13 +31,13 @@ jobs:
           elif [[ $LINE == Upgrade* ]]
           then
             echo "Information on how to fix it: ${LINE}"
-          elif [[ $LINE == Issues with no direct upgrade* ]]
+          elif [[ $LINE == "Issues with no direct upgrade"* ]]
           then
             echo "No direct upgrade: ${LINE}"
-          elif [[ $LINE == No upgrade or patch available* ]]
+          elif [[ $LINE == "No upgrade or patch available"* ]]
           then
             echo "No fix: ${LINE}"
-          elif [[ $LINE == This issue was fixed in versions* ]]
+          elif [[ $LINE == "This issue was fixed in versions"* ]]
           then
             echo "Explicity fix: ${LINE}"
           else
