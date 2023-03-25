@@ -9,7 +9,58 @@ jobs:
     name: Release operator-bundle
     runs-on: ubuntu-latest
     steps:
-    
-    - name: test
+    - name: Checkout project
+      uses: actions/checkout@v3
+    - name: Scan vulnerabilities with snyk
       run: |
-        echo "Test"
+        cd scan-prj
+        bash build-pom.sh
+        npm install snyk -g
+        snyk auth ${{ secrets.SNYK_TOKEN }}
+        snyk test >> snyk-results.txt || true
+        echo "Vulnerable Library, Vulnerability Type, Severity, Current Version, Fix Version, Fix Type (Update/Explicity/No Fix), Details" > report.csv
+        LINE_NUM=1
+        while read LINE
+        do
+          if [[ $LINE == Upgrade* ]]
+          then
+            VULNERABLE_LIB_VERSION_FIX=$(echo "${LINE}" | awk -F '@' '{print $3}' | awk -F ' ' '{print $1}')
+            FIX_TYPE="Update"
+            ISSUES_WITH_NO_DIRECT_UPGRADE=false
+          elif [[ $LINE == ✗* ]]
+          then
+            VULNERABILITY_TYPE=$(echo "${LINE}" | awk -F '✗ ' '{print $2}' | awk -F ' \\[' '{print $1}')
+            VULNERABILITY_SEVERITY=$(echo "${LINE}" | awk -F '[' '{print $2}' | awk -F ' ' '{print $1}')
+            VULNERABILITY_SNYK_LINK=$(echo "${LINE}" | awk -F '[' '{print $3}' | awk -F ']' '{print $1}')
+          elif [[ $LINE == "Issues with no direct upgrade"* ]]
+          then
+            ISSUES_WITH_NO_DIRECT_UPGRADE=true
+            FIX_TYPE="No fix"
+            VULNERABLE_LIB_VERSION_FIX=
+          elif [[ $LINE == "introduced by"* ]]
+          then
+            VULNERABLE_LIB=$(echo "${LINE}" | awk -F 'introduced by ' '{print $2}' | awk -F '@' '{print $1}')
+            VULNERABLE_LIB_VERSION=$(echo "${LINE}" | awk -F '@' '{print $2}' | awk '{print $1}')
+            if [[ $ISSUES_WITH_NO_DIRECT_UPGRADE = false ]]
+            then
+              echo "${VULNERABLE_LIB},${VULNERABILITY_TYPE},${VULNERABILITY_SEVERITY},${VULNERABLE_LIB_VERSION},${VULNERABLE_LIB_VERSION_FIX},${FIX_TYPE},${VULNERABILITY_SNYK_LINK}" >> report.csv
+            fi
+          elif [[ $LINE == "This issue was fixed in versions"* ]]
+          then
+            VULNERABLE_LIB_VERSION_FIX=$(echo "${LINE}" | awk -F 'This issue was fixed in versions: ' '{print $2}')
+            FIX_TYPE="Explicity"
+            echo "${VULNERABLE_LIB},${VULNERABILITY_TYPE},${VULNERABILITY_SEVERITY},${VULNERABLE_LIB_VERSION},${VULNERABLE_LIB_VERSION_FIX},${FIX_TYPE},${VULNERABILITY_SNYK_LINK}" >> report.csv
+          elif [[ $LINE == "No upgrade or patch available"* ]]
+          then
+            FIX_TYPE="No fix"
+            VULNERABLE_LIB_VERSION_FIX=
+            echo "${VULNERABLE_LIB},${VULNERABILITY_TYPE},${VULNERABILITY_SEVERITY},${VULNERABLE_LIB_VERSION},${VULNERABLE_LIB_VERSION_FIX},${FIX_TYPE},${VULNERABILITY_SNYK_LINK}" >> report.csv
+          fi
+          ((LINE_NUM++))
+        done < snyk-results.txt
+        cat report.csv
+    - name: Upload Cypress results
+      uses: actions/upload-artifact@v3
+      with:
+        name: snyk-report
+        path: scan-prj/report.csv
