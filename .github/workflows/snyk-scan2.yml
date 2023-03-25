@@ -57,3 +57,8 @@ jobs:
           ((LINE_NUM++))
         done < snyk-results.txt
         cat report.csv
+    - name: Upload Cypress results
+      uses: actions/upload-artifact@v3
+      with:
+        name: snyk-report.csv
+        path: report.csv
