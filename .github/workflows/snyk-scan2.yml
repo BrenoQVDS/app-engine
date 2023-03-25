@@ -62,7 +62,6 @@ jobs:
         echo "Here2"
         ls
         echo "Here3"
-        cp report.csv /report.csv
         echo "Here4"
         ls /
         echo "Here5"
@@ -70,9 +69,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: snyk-report.csv
-        path: /home/runner/work/app-engine/app-engine/scan-prj/report.csv
-    - name: Upload Cypress results
-      uses: actions/upload-artifact@v3
-      with:
-        name: snyk-report2.csv
-        path: /report.csv        
+        path: scan-prj/report.csv
